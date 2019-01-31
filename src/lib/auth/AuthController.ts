@@ -26,22 +26,27 @@ router.post('/register', (req: Request, res: Response) => {
   db.User.findOne({
     where: { username: req.body.username}
   })
-  .then(() => res.status(400).send('Username already exists.'));
-
-  // If user doesn't already exist, create it
-  db.User.create({
-    username : req.body.username,
-    password : hashedPassword,
-  })
   .then((user: UserInstance) => {
-    var token = jwt.sign(
-      { id: user.id },
-      config.SECRET,
-      { expiresIn: 86400 }, // expires in 24 hours
-    );
-    res.status(200).send({ token: token });
-  })
-  .catch(err => res.status(500).send(`Error registering the user: ${err}`));
+    if (user) {
+      res.status(400).send('Username already exists.');
+    } else {
+      db.User.create({
+        username : req.body.username,
+        password : hashedPassword,
+      })
+      .then((user: UserInstance) => {
+        var token = jwt.sign(
+          { id: user.id },
+          config.SECRET,
+          { expiresIn: 86400 }, // expires in 24 hours
+        );
+        res.status(200).send({ token: token });
+      })
+      .catch(err => res.status(500).send(`Error registering the user: ${err}`));
+    }
+  });
+
+
 });
 
 router.post('/login', (req: Request, res: Response) => {
