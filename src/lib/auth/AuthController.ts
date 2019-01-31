@@ -55,21 +55,18 @@ router.post('/login', (req: Request, res: Response) => {
   })
   .then((user: UserInstance) => {
     if (!user) {
-      return res.status(404).send(`No user found by that username: ${req.body.username}`);
+      res.status(404).send(`No user found by that username: ${req.body.username}`);
+    } else if (!bcrypt.compareSync(req.body.password, user.password)) {
+      // Check if password is valid
+      res.status(401).send({ token: null });
+    } else {
+      const token = jwt.sign(
+        { id: user.id },
+        config.SECRET,
+        { expiresIn: 86400 }, // expires in 24 hours
+      );
+      res.status(200).send({ token: token });
     }
-
-    var isPasswordValid = bcrypt.compareSync(req.body.password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).send({ token: null });
-    }
-
-    var token = jwt.sign(
-      { id: user.id },
-      config.SECRET,
-      { expiresIn: 86400 }, // expires in 24 hours
-    );
-
-    return res.status(200).send({ token: token });
   })
   .catch(err => res.status(500).send(err));
 });
