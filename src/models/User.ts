@@ -1,9 +1,9 @@
-import Sequelize from 'sequelize';
-
+import Sequelize, { DataTypeUUID } from 'sequelize';
+import uuid from 'uuid';
 import { SequelizeAttributes } from '../types/SequelizeAttributes';
 
 export interface UserAttributes {
-  id?: number;
+  id?: DataTypeUUID;
   username: string;
   password: string;
   createdAt?: Date;
@@ -23,6 +23,12 @@ export const UserFactory = (
   DataTypes: Sequelize.DataTypes
 ): Sequelize.Model<UserInstance, UserAttributes> => {
   const attributes: SequelizeAttributes<UserAttributes> = {
+    id: {
+      allowNull: false,
+      primaryKey: true,
+      type: Sequelize.UUID,
+      defaultValue: uuid(),
+    },
     username: {
       type: DataTypes.STRING,
       unique: true,
