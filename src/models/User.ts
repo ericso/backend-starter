@@ -1,6 +1,7 @@
 import Sequelize, { DataTypeUUID } from 'sequelize';
 import uuid from 'uuid';
 import { SequelizeAttributes } from '../types/SequelizeAttributes';
+import { MessageAttributes } from './Message';
 
 export interface UserAttributes {
   id?: DataTypeUUID;
@@ -8,6 +9,7 @@ export interface UserAttributes {
   password: string;
   createdAt?: Date;
   updatedAt?: Date;
+  messages?: MessageAttributes[] | MessageAttributes['id'][];
 };
 
 export interface UserInstance extends Sequelize.Instance<UserAttributes>, UserAttributes {
@@ -39,6 +41,10 @@ export const UserFactory = (
   };
 
   const User = sequelize.define<UserInstance, UserAttributes>('User', attributes);
+
+  User.associate = models => {
+    User.hasMany(models.Message, { foreignKey: 'UserId' });
+  };
 
   return User;
 };
