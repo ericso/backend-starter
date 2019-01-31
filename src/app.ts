@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 
-import AuthController from './lib/auth/AuthController';
+import AuthController from './controllers/Auth';
+import MessageController from './controllers/Message';
 
 const app = express();
 app.use(cors());
@@ -10,5 +11,6 @@ app.use(cors());
 app.get('/health', (_, res) => res.send('Still alive.'));
 
 app.use('/auth', AuthController);
+app.use('/message', MessageController);
 
 export default app;

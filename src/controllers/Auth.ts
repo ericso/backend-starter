@@ -11,9 +11,9 @@ import bodyParser from 'body-parser';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-import db from '../../database';
-import config from '../../config';
-import { UserInstance } from '../../models/User';
+import db from '../database';
+import config from '../config';
+import { UserInstance } from '../models/User';
 
 const router = express.Router();
 router.use(bodyParser.urlencoded({ extended: false }));
@@ -24,7 +24,7 @@ router.post('/register', (req: Request, res: Response) => {
 
   // Make sure we don't already have a user with this username
   db.User.findOne({
-    where: { username: req.body.username}
+    where: { username: req.body.username },
   })
   .then((user: UserInstance) => {
     if (user) {
@@ -51,7 +51,7 @@ router.post('/register', (req: Request, res: Response) => {
 
 router.post('/login', (req: Request, res: Response) => {
   db.User.findOne({
-    where: { username: req.body.username }
+    where: { username: req.body.username },
   })
   .then((user: UserInstance) => {
     if (!user) {

@@ -1,7 +1,7 @@
 import Sequelize, { DataTypeUUID } from 'sequelize';
 import uuid from 'uuid';
 import { SequelizeAttributes } from '../types/SequelizeAttributes';
-import { MessageAttributes } from './Message';
+import { MessageInstance, MessageAttributes } from './Message';
 
 export interface UserAttributes {
   id?: DataTypeUUID;
@@ -13,11 +13,16 @@ export interface UserAttributes {
 };
 
 export interface UserInstance extends Sequelize.Instance<UserAttributes>, UserAttributes {
-  // At the moment, there's nothing more to add apart
-  // from the methods and attributes that the types
-  // `Sequelize.Instance<UserAttributes>` and
-  // `UserAttributes` give us. We'll add more here when
-  //  we get on to adding associations.
+  getMessages: Sequelize.HasManyGetAssociationsMixin<MessageInstance>;
+  setMessages: Sequelize.HasManySetAssociationsMixin<MessageInstance, MessageInstance['id']>;
+  addMessages: Sequelize.HasManyAddAssociationsMixin<MessageInstance, MessageInstance['id']>;
+  addMessage: Sequelize.HasManyAddAssociationMixin<MessageInstance, MessageInstance['id']>;
+  createMessage: Sequelize.HasManyCreateAssociationMixin<MessageAttributes, MessageInstance>;
+  removeMessage: Sequelize.HasManyRemoveAssociationMixin<MessageInstance, MessageInstance['id']>;
+  removeMessages: Sequelize.HasManyRemoveAssociationsMixin<MessageInstance, MessageInstance['id']>;
+  hasMessage: Sequelize.HasManyHasAssociationMixin<MessageInstance, MessageInstance['id']>;
+  hasMessages: Sequelize.HasManyHasAssociationsMixin<MessageInstance, MessageInstance['id']>;
+  countMessages: Sequelize.HasManyCountAssociationsMixin;
 };
 
 export const UserFactory = (
