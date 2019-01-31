@@ -11,7 +11,7 @@ import bodyParser from 'body-parser';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-import { db } from '../../app';
+import db from '../../database';
 import config from '../../config';
 import { UserInstance } from '../../models/User';
 

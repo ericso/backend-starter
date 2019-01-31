@@ -3,6 +3,7 @@ require('dotenv').config();
 import config from './config';
 import logger from './logger';
 import app from './app';
+import db from './database';
 
 
 let port;
@@ -15,6 +16,8 @@ if (port === undefined) {
   port = config.PORT;
 }
 
-app.listen(port, '0.0.0.0', () => {
-  logger.info(`🚀 Server ready at http://0.0.0.0:${port}`);
+db.sequelize.sync().then(() => {
+  app.listen(port, '0.0.0.0', () => {
+    logger.info(`🚀 Server ready at http://0.0.0.0:${port}`);
+  });
 });
