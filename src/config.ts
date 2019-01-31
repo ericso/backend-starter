@@ -1,9 +1,13 @@
-const config = {
-    PORT: parseInt(process.env.PORT, 10) || 5000,
-    DATABASE: process.env.DATABASE,
-    DATABASE_USER: process.env.DATABASE_USER,
-    DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
-    SECRET: process.env.SECRET,
-  };
+export default {
+  PORT: parseInt(process.env.PORT, 10) || 5000,
+  SECRET: process.env.SECRET,
+};
 
-export default config;
+export const sequelizeConfig = {
+  database: process.env.DATABASE,
+  user: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  params: {
+    dialect: process.env.SQL_DIALECT,
+  },
+};

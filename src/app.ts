@@ -1,10 +1,16 @@
-import AuthController from './lib/auth/AuthController';
-
 import express from 'express';
 import cors from 'cors';
 
-const app = express();
+import AuthController from './lib/auth/AuthController';
+import { createModels } from './models';
+import { sequelizeConfig } from './config';
 
+const db = createModels(sequelizeConfig);
+db.sequelize.sync();
+
+export { db };
+
+const app = express();
 app.use(cors());
 
 // health check api for liveness probe

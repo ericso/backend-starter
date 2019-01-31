@@ -6,82 +6,67 @@
  *
  */
 
-import express from 'express';
+import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
+import { db } from '../../app';
 import config from '../../config';
-import models from '../models';
-
+import { UserInstance } from '../../models/User';
 
 const router = express.Router();
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
-router.post('/register', (req, res) => {
+router.post('/register', (req: Request, res: Response) => {
   var hashedPassword = bcrypt.hashSync(req.body.password, 8);
 
   // Make sure we don't already have a user with this username
-  models.User.findByLogin(
-    {
-      login: req.body.username
-    },
-    (err, user) => {
-      if (err) {
-        console.log(`Error occured during lookup of user: ${err}`);
-      }
-      if (user) {
-        return res.status(400).send('Username already exists.')
-      }
-    }
-  );
+  db.User.findOne({
+    where: { username: req.body.username}
+  })
+  .then(() => res.status(400).send('Username already exists.'));
 
-  models.User.create({
+  // If user doesn't already exist, create it
+  db.User.create({
     username : req.body.username,
     password : hashedPassword,
-  },
-  (err, user) => {
-    if (err) {
-      return res.status(500).send('There was a problem registering the user.');
-    }
-
-    // create a token
+  })
+  .then((user: UserInstance) => {
     var token = jwt.sign(
-      { id: user._id },
+      { id: user.id },
       config.SECRET,
       { expiresIn: 86400 }, // expires in 24 hours
     );
-    res.status(200).send({ auth: true, token: token });
-  });
+    res.status(200).send({ token: token });
+  })
+  .catch(err => res.status(500).send(`Error registering the user: ${err}`));
 });
 
-router.post('/login', (req, res) =>  {
-  models.User.findByLogin(
-    {
-      login: req.body.username
-    },
-    (err, user) => {
-      if (err) {
-        return res.status(500).send('Error on the server.');
-      }
-      if (!user) {
-        return res.status(404).send('No user found.');
-      }
-
-      var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
-      if (!passwordIsValid) {
-        return res.status(401).send({ auth: false, token: null });
-      }
-
-      var token = jwt.sign(
-        { id: user._id },
-        config.SECRET,
-        { expiresIn: 86400 }, // expires in 24 hours
-      );
-      res.status(200).send({ auth: true, token: token });
+router.post('/login', (req: Request, res: Response) => {
+  db.User.findOne({
+    where: { username: req.body.username }
+  })
+  .then((user: UserInstance) => {
+    if (!user) {
+      return res.status(404).send(`No user found by that username: ${req.body.username}`);
     }
-  );
+
+    var isPasswordValid = bcrypt.compareSync(req.body.password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).send({ token: null });
+    }
+
+    var token = jwt.sign(
+      { id: user.id },
+      config.SECRET,
+      { expiresIn: 86400 }, // expires in 24 hours
+    );
+
+    return res.status(200).send({ token: token });
+  })
+  .catch(err => res.status(500).send(err));
 });
 
 export default router;

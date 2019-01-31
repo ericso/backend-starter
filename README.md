@@ -1,4 +1,4 @@
-# haus-backend
+# backend-starter
 
 Backend for the Haus homework assignment.
 
