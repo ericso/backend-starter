@@ -5,8 +5,10 @@ import { MessageFactory } from './Message';
 
 
 export const createModels = (sequelizeConfig: any): DbInterface => {
-  const { database, username, password, params } = sequelizeConfig;
-  const sequelize = new Sequelize(database, username, password, params);
+  const { databaseUrl, database, username, password, params } = sequelizeConfig;
+  const sequelize = databaseUrl
+    ? new Sequelize(databaseUrl, params)
+    : new Sequelize(database, username, password, params);
 
   const db: DbInterface = {
     sequelize,

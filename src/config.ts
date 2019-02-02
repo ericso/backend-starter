@@ -4,10 +4,12 @@ export default {
 };
 
 export const sequelizeConfig = {
+  databaseUrl: process.env.DATABASE_URL,
   database: process.env.DATABASE,
   user: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASSWORD,
   params: {
+    host: process.env.DATABASE_HOST,
     dialect: process.env.SQL_DIALECT,
   },
 };
