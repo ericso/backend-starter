@@ -1,6 +1,6 @@
 # backend-starter
 
-Backend starter using Nodejs and Sequelize.
+Backend starter app using Nodejs and Sequelize.
 
 ## To run locally
 1. Setup a Postgres database. You can find directions via this tutorial: https://www.robinwieruch.de/postgres-sql-macos-setup/.
