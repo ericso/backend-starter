@@ -1,7 +1,7 @@
 {
   "name": "backend-starter",
   "version": "1.0.0",
-  "description": "Backend for Haus homework assignment",
+  "description": "Backend starter app using Nodejs and Sequelize",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
