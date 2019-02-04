@@ -3,7 +3,6 @@
  */
 
 import Sequelize, { DataTypeUUID } from 'sequelize';
-import uuid from 'uuid';
 import { SequelizeAttributes } from '../types/SequelizeAttributes';
 import { UserInstance, UserAttributes } from './User';
 
@@ -30,7 +29,7 @@ export const MessageFactory = (
       allowNull: false,
       primaryKey: true,
       type: Sequelize.UUID,
-      defaultValue: uuid(),
+      defaultValue: Sequelize.UUIDV4,
     },
     text: {
       type: DataTypes.STRING,

@@ -1,5 +1,4 @@
 import Sequelize, { DataTypeUUID } from 'sequelize';
-import uuid from 'uuid';
 import { SequelizeAttributes } from '../types/SequelizeAttributes';
 import { MessageInstance, MessageAttributes } from './Message';
 
@@ -34,7 +33,7 @@ export const UserFactory = (
       allowNull: false,
       primaryKey: true,
       type: Sequelize.UUID,
-      defaultValue: uuid(),
+      defaultValue: Sequelize.UUIDV4,
     },
     username: {
       type: DataTypes.STRING,
